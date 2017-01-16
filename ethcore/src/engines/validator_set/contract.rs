@@ -166,7 +166,7 @@ mod tests {
 		client.engine().register_client(Arc::downgrade(&client));
 		let validator_contract = Address::from_str("0000000000000000000000000000000000000005").unwrap();
 
-		client.miner().set_engine_signer(v1, "".into()).unwrap();
+		client.engine().set_signer(tap.clone(), v1, "".into());
 		// Remove "1" validator.
 		let tx = Transaction {
 			nonce: 0.into(),
@@ -194,11 +194,11 @@ mod tests {
 		assert_eq!(client.chain_info().best_block_number, 1);
 
 		// Switch to the validator that is still there.
-		client.miner().set_engine_signer(v0, "".into()).unwrap();
+		client.engine().set_signer(tap.clone(), v0, "".into());
 		client.update_sealing();
 		assert_eq!(client.chain_info().best_block_number, 2);
 		// Switch back to the added validator, since the state is updated.
-		client.miner().set_engine_signer(v1, "".into()).unwrap();
+		client.engine().set_signer(tap.clone(), v1, "".into());
 		let tx = Transaction {
 			nonce: 2.into(),
 			gas_price: 0.into(),
